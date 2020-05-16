@@ -2,15 +2,13 @@
 
 ## Overview
 
+Attention!
+
 **Current project is a copy of the awesome admin:**  
 
 [vue-typescript-admin-template](http://armour.github.io/vue-typescript-admin-template)
 
 **but with some additional customization.**  
-
-```md
-[vue-typescript-admin-template](http://armour.github.io/vue-typescript-admin-template) is a production-ready front-end solution for admin interfaces based on [vue](https://github.com/vuejs/vue), [typescript](https://www.typescriptlang.org/) and UI Toolkit [element-ui](https://github.com/ElemeFE/element). The original Javascript version code [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin/) was written by [PanJiaChen](https://github.com/PanJiaChen), many thanks to him for the awesome open source project! :)
-```
 
 The following content is the copy of vue-typescript-admin-template's readme.md, I will modify it in the coming days ...
 
