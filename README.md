@@ -6,7 +6,7 @@ Attention!
 
 **Current project is a copy of the awesome admin:**  
 
-[vue-typescript-admin-template](http://armour.github.io/vue-typescript-admin-template)
+[vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
 
 **but with some additional customization.**  
 
