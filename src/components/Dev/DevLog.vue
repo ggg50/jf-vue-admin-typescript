@@ -56,11 +56,16 @@ export default class DevLog extends Vue {
   width: 300px;
   height: 300px;
   z-index: 999;
-  background-color: red;
+  color: red;
+  background-color: rgba(141, 137, 137, 0.6);
+  padding: 10px;
+  border-radius: 5px;
+  line-height: 1.4em;
 
   &:hover {
     width: 300px;
     height: 300px;
+    background-color:rgba(141, 137, 137, 1);
   }
 }
 </style>

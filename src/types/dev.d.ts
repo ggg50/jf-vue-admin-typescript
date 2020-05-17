@@ -4,6 +4,7 @@ import Vue from 'vue'
 export {
   IDevPicker,
   IDevDataItem,
+  IDevOptionsItem,
 }
 
 interface IDevPicker {
@@ -21,3 +22,8 @@ interface IDevDataItem {
   vm: Vue | null
 }
 
+interface IDevOptionsItem {
+  name: string
+  routes: string[]
+  description?: string
+}

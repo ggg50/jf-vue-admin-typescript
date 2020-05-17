@@ -1,7 +1,7 @@
 // 1. Make sure to import 'vue' before declaring augmented types
 import  { VueConstructor } from 'vue'
 import DevLog from '@/components/Dev/DevLog.vue'
-import { IDevPicker, IDevDataItem } from "@/types/dev"
+import { IDevPicker, IDevDataItem, IDevOptionsItem } from "@/types/dev"
 import _ from 'lodash'
 import { replaceArrayItem } from "@/utils/base";
 
@@ -26,14 +26,14 @@ export default {
     /**
      * this fn will marge optionsList to devPicker target vm's devData
      * @param {Array} optionsList see below
-     * @param {string} name name of data
-     * @param {Array} routes array of route name data should be showed
-     * @param {string} description
+     * @param {string} optionsList.name name of data
+     * @param {Array} optionsList.routes array of route name data should be showed
+     * @param {string} optionsList.description
      *
      * or, you can input a list of string formatted like this: 'name-route1,route2-description'
      */
 
-    type OptionType = IDevDataItem[] | string[]
+    type OptionType = IDevOptionsItem[] | string[]
 
     const pickerFn = function(optionsList: OptionType, vm: Vue) {
       let _optionsList: OptionType = _.cloneDeep(optionsList)
@@ -48,8 +48,6 @@ export default {
               name: _items[0].trim(),
               routes: _items[1].trim().split(','),
               description: _items[2] && _items[2].trim(),
-              key: '',
-              vm: null
             }
           })
         }
@@ -60,11 +58,14 @@ export default {
 
       if(devPicker.target){
         // 把 optionsList 传给devPicker
-        (_optionsList as IDevDataItem[]).forEach((item: IDevDataItem) => {// 用 as 是为了阻止报错
-          item.vm = vm
-          item.key = (vm as any).name || '' + item.name
+        (_optionsList as IDevOptionsItem[]).forEach((item: IDevOptionsItem) => {// 用 as 是为了阻止报错
+          let _item: IDevDataItem = {
+            ...item,
+            vm,
+            key: (vm as any).name || '' + item.name,
+          }
           let _arr = (devPicker.target as any).devData as IDevDataItem[]
-          (devPicker.target as any).devData = replaceArrayItem(_arr, (devItem) => devItem.key === item.key, item, false)
+          (devPicker.target as any).devData = replaceArrayItem(_arr, _item, (devItem, newItem) => devItem.key === newItem.key, false)
         })
       }
 
