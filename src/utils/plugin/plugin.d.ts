@@ -1,5 +1,6 @@
-import Vue, {VueConstructor} from 'vue'
-import { IDevOptionsItem } from "@/types/dev"
+/* eslint-disable @typescript-eslint/interface-name-prefix */
+import Vue from 'vue'
+import { IDevOptionsItem } from '@/types/dev'
 // plugin
 declare module 'vue/types/vue' {
     interface Vue {
@@ -8,6 +9,6 @@ declare module 'vue/types/vue' {
 }
 declare module 'vue/types/vue' {
     interface Vue {
-      $ok: string 
+      $ok: string
     }
 }

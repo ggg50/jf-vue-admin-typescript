@@ -45,8 +45,6 @@ Vue.config.productionTip = false
 
 Vue.use(plugin)
 
-console.log(Vue.prototype.$dp)
-
 new Vue({
   router,
   store,

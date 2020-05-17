@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { IDevDataItem } from '@/types/dev'
 
 @Component({
@@ -24,11 +24,6 @@ export default class DevLog extends Vue {
   rootVm: Vue | null = null
   devData: IDevDataItem[] = [];
 
-  @Watch('rootVm', { immediate: true })
-  updateVisiable() {
-    console.log(this.rootVm)
-  }
-
   get routeName(): string {
     if (this.rootVm && this.rootVm.$route) {
       return this.rootVm.$route.name || ''
@@ -38,11 +33,6 @@ export default class DevLog extends Vue {
 
   get showData(): IDevDataItem[] {
     return this.devData && this.devData.filter(item => item.routes.includes(this.routeName) || item.routes.includes('*'))
-  }
-
-  created() {
-    console.log(this.devData)
-    console.log(this.rootVm)
   }
 }
 

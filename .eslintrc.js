@@ -36,7 +36,10 @@ module.exports = {
     'vue/eqeqeq': 'error',
     'vue/key-spacing': 'error',
     'vue/match-component-file-name': 'error',
-    'vue/object-curly-spacing': 'error'
+    'vue/object-curly-spacing': 'error',
+    "no-use-before-define": ["error", { "functions": false, "classes": false }], // 关掉函数未声明就使用的报错
+    "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": false }],
+    'comma-dangle': [0, 'never'], // 关掉最后一个 , 的报错
   },
   overrides: [
     {
