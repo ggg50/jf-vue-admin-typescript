@@ -1,4 +1,3 @@
-// 1. Make sure to import 'vue' before declaring augmented types
 import { VueConstructor } from 'vue'
 import DevLog from '@/components/Dev/DevLog.vue'
 import { IDevPicker, IDevDataItem, IDevOptionsItem } from '@/types/dev'
@@ -9,6 +8,11 @@ if (!DevLog) console.error('Component Devlog is undefined, make sure you have im
 
 export default {
   install(Vue: VueConstructor) {
+    if (process.env.NODE_ENV === 'production') {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      Vue.prototype.$dp = () => {}
+      return
+    }
     // if() dev environment
     // todo return
     // devPicker.target.devData: array

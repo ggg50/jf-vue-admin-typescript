@@ -143,16 +143,23 @@ export const constantRoutes: RouteConfig[] = [
  * the routes that need to be dynamically loaded based on user roles
 */
 export const asyncRoutes: RouteConfig[] = [
+
   { // @@tips 要这么写才生效  ---- 2020-05-05 11:04:24
     path: '/test',
     component: Layout,
-    name: 'test',
+    redirect: '/test/test1',
+    meta: {
+      title: 'test',
+      icon: 'test',
+      roles: ['admin', 'editor'], // you can set roles in root nav
+      alwaysShow: process.env.NODE_ENV === 'production'
+    },
     children: [
       {
-        path: 'index',
+        path: 'test1',
         component: () => import('@/views/testPage/index.vue'),
         name: 'test',
-        meta: { title: 'Test', icon: 'test', noCache: true }
+        meta: { title: 'test', icon: 'test', noCache: true }
       }
     ]
   },
