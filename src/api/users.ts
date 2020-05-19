@@ -1,5 +1,11 @@
 import request from '@/utils/request'
 
+export const getCaptcha = () =>
+  request({
+    url: '/sys/login/getCaptchaImg',
+    method: 'get',
+  })
+
 export const getUsers = (params: any) =>
   request({
     url: '/users',
