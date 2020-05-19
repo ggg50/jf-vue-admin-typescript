@@ -51,8 +51,6 @@ service.interceptors.response.use(
     "HCOM1002", "系统异常！"
     "HCOM1003", "未知异常！"
   */
-    console.log('+++++++')
-    console.log(response)
     const res = response.data
     if (res.code !== 'HCOM1000') {
       Message({
