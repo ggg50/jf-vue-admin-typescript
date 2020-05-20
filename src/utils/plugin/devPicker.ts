@@ -13,8 +13,7 @@ export default {
       Vue.prototype.$dp = () => {}
       return
     }
-    // if() dev environment
-    // todo return
+
     // devPicker.target.devData: array
     // devPicker.target.rootVm: app root vm
 
@@ -98,5 +97,4 @@ export default {
       return devVm
     }
   }
-
 }

@@ -59,21 +59,20 @@ export default class DevLog extends Vue {
   }
 
   onHide() {
-    console.log('+++++++')
     this.isHidden = true
   }
 
   created() {
     document.addEventListener('keydown', event => {
       const code: number = event.keyCode
-      if ([17, 68].includes(code) && !this.currentPressKeys.includes(code)) {
+      if ([17, 66].includes(code) && !this.currentPressKeys.includes(code)) {
         this.currentPressKeys.push(code)
         event.stopPropagation()
       }
     })
     document.addEventListener('keyup', event => {
       const code: number = event.keyCode
-      if ([17, 68].includes(code) && this.currentPressKeys.includes(code)) {
+      if ([17, 66].includes(code) && this.currentPressKeys.includes(code)) {
         this.currentPressKeys = this.currentPressKeys.filter(item => item !== code)
         event.stopPropagation()
       }

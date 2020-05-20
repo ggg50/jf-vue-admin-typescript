@@ -119,6 +119,7 @@ import Sortable from 'sortablejs'
 import { Component, Vue } from 'vue-property-decorator'
 import { getArticles } from '@/api/articles'
 import { IArticleData } from '@/api/types'
+import './index'
 
 @Component({
   name: 'DraggableTable'
