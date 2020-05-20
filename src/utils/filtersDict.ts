@@ -13,9 +13,6 @@ export const filtersDict = { // Customize your filters dict
 const filterKeys = Object.keys(filtersDict)
 
 export function getGlobalFilter(key: IFilterKey, vm: Vue): Function {
-  console.log('2222222')
-  console.log(key)
-
   if (!filterKeys.includes(key)) console.log(`current key ${key} no found, which mean there is no present filter in dict match with it`)
   const _filters = vm.$options.filters
   const _filterName = filtersDict[key]

@@ -184,10 +184,10 @@ export default class extends Vue {
   //   return true
   // }
 
-  get innerColumnsList(): ITableItem[] {
-    let list = JSON.parse(JSON.stringify(this.columnsList))
-    if (typeof list[0] === 'string') {
-      list = list.map((item: string) => {
+  get innerRawColumnsList(): ITableItem[] {
+    let _list = JSON.parse(JSON.stringify(this.columnsList))
+    if (typeof _list[0] === 'string') {
+      _list = _list.map((item: string) => {
         const values = item.split('-')
         return {
           title: values[0].trim(),
@@ -196,12 +196,19 @@ export default class extends Vue {
         }
       })
     }
+    return _list
+  }
 
-    this.innerColumnKeys = list.map((item: ITableItem) => item.key)
+  // key with global filters' identifier
+  get innerColumnKeysWithIdentifier(): string[] {
+    return this.innerRawColumnsList.map((item: ITableItem) => item.key)
+  }
+
+  get innerColumnsList(): ITableItem[] {
+    const _list = JSON.parse(JSON.stringify(this.innerRawColumnsList))
     // remove '$\w' in every column key
-    list.forEach((item: ITableItem) => (item.key = item.key.replace(this.filterReg, '')))
-    console.log(JSON.stringify(list, null, 2))
-    return list
+    _list.forEach((item: ITableItem) => (item.key = item.key.replace(this.filterReg, '')))
+    return _list
   }
 
   get innerTableData() {
