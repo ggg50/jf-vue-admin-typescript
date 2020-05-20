@@ -15,6 +15,7 @@ import ResizeMixin from './mixins/resize'
 @Component({
   name: 'LineChart'
 })
+
 export default class extends mixins(ResizeMixin) {
   @Prop({ default: 'chart' }) private className!: string
   @Prop({ default: 'chart' }) private id!: string

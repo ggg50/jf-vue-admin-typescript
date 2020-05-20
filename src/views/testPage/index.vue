@@ -111,6 +111,12 @@
     <el-button @click="ok">
       ok
     </el-button>
+
+    <common-table
+      :table-data="testData"
+      :distribute-width="true"
+      :columns-list="testColumn"
+    />
   </div>
 </template>
 
@@ -119,12 +125,43 @@ import Sortable from 'sortablejs'
 import { Component, Vue } from 'vue-property-decorator'
 import { getArticles } from '@/api/articles'
 import { IArticleData } from '@/api/types'
+import CommonTable from '@/components/Table/CommonTable.vue'
 import './index'
 
 @Component({
-  name: 'DraggableTable'
+  name: 'TextPage',
+  components: {
+    CommonTable
+  }
 })
+
 export default class extends Vue {
+  private testColumn = ['DokD-date$t-100%', 'ADDRESS-address-200%', 'NAME-name-100%', 'momey-number$a-300%']
+  private testData = [
+    {
+      date: '2016-05-02',
+      name: '王虎1',
+      address: ' 1518 弄',
+      number: '123123123'
+    },
+    {
+      date: '2016-05-04',
+      name: '王小虎2',
+      address: '上海市普陀区金沙 弄',
+      number: '123123123'
+    },
+    {
+      date: '2016-05-01',
+      name: '王小虎3',
+      address: '上海市普陀区金沙江路 1519 弄'
+    },
+    {
+      date: '2016-05-03',
+      name: '王小虎4',
+      address: '上海市普陀区金沙江路 1516 弄'
+    }
+  ]
+
   private list: IArticleData[] = []
   private listLoading = true
   private total = []
