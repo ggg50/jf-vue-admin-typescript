@@ -108,8 +108,8 @@
     <div class="show-d">
       <el-tag>{{ $t('table.dragTips2') }} :</el-tag> {{ newList }}
     </div>
-    <el-button @click="ok">
-      ok
+    <el-button @click="test">
+      test
     </el-button>
 
     <common-table
@@ -126,7 +126,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { getArticles } from '@/api/articles'
 import { IArticleData } from '@/api/types'
 import CommonTable from '@/components/Table/CommonTable.vue'
-import './index'
+import { generateRandom } from './index.ts'
 
 @Component({
   name: 'TextPage',
@@ -172,7 +172,7 @@ export default class extends Vue {
     limit: 10
   }
 
-  oko = 1
+  t = 1
   bb = '2'
 
   private sortable: Sortable | null = null
@@ -181,8 +181,12 @@ export default class extends Vue {
     this.getList()
   }
 
+  test() {
+    this.t = generateRandom('name', 10, 30)
+    this.ok()
+  }
+
   ok() {
-    this.oko += 1
     this.$dp([
       {
         name: 'bb',
@@ -190,7 +194,7 @@ export default class extends Vue {
         description: 'description1'
       },
       {
-        name: 'oko',
+        name: 't',
         routes: ['*'],
         description: 'description1'
       },
