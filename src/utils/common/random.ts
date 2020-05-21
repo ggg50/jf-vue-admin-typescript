@@ -17,6 +17,7 @@ const randomGenerator = {
   money: randomMoney,
   date: randomDate,
   time: randomTime,
+  timestamp: randomTimestamp,
   line: randomLine,
 }
 
@@ -24,7 +25,11 @@ type RandomKey = keyof typeof randomGenerator
 
 const typesList = Object.keys(randomGenerator)
 
-function randomNumber(n = 3): number {
+/**
+ *
+ * @param n random number long
+ */
+function randomNumber(n = 6): number {
   return randomNumberWithExactLong(n)
 }
 
@@ -67,27 +72,38 @@ function randomMoney(sign = '$') {
   return sign + ' ' + createRandomFromRegExp(/[1-9][0-9]{1,3}(,[0-9]{3}){0,3}(\.[1-9][1-9])?/)
 }
 
+/**
+ *
+ * @param day random day picker range, from how many day before
+ * @param format output date format
+ */
+
 function randomDate(day = 60, format = 'YYYY-MM-DD') {
-  return moment(createTimestamp(day)).format(format)
+  return moment(randomTimestamp(day)).format(format)
 }
 
 function randomTime(day = 60, format = 'YYYY-MM-DD HH:mm:ss') {
-  return moment(createTimestamp(day)).format(format)
+  return moment(randomTimestamp(day)).format(format)
 }
 
+function randomTimestamp(day = 60): number {
+  const _distance = day * 24 * 60 * 60 * 1000
+  const _end = Date.now()
+  const _start = _end - _distance
+  return createNumber(_distance) + _start
+}
+
+/**
+ *
+ * @param min minimum number of characters
+ * @param max maximum number of characters
+ */
 function randomLine(min = 20, max = 30): string {
   let _text = faker.lorem.words()
   for (; _text.length < min;) {
     _text += faker.lorem.words().substring(0, max)
   }
   return _text
-}
-
-function createTimestamp(day = 60): number {
-  const _distance = day * 24 * 60 * 60 * 1000
-  const _end = Date.now()
-  const _start = _end - _distance
-  return createNumber(_distance) + _start
 }
 
 function randomNumberWithExactLong(n: number): number {

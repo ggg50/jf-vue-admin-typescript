@@ -126,7 +126,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { getArticles } from '@/api/articles'
 import { IArticleData } from '@/api/types'
 import CommonTable from '@/components/Table/CommonTable.vue'
-import { generateRandom } from './index.ts'
+import { generateRandom } from '@/utils/common/random'
 
 @Component({
   name: 'TextPage',
