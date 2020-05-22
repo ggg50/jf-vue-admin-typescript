@@ -137,7 +137,7 @@ import { UserModule } from '@/store/modules/user'
 import { isValidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect/index.vue'
 import SocialSign from './components/SocialSignin.vue'
-import { getCaptcha } from '@/api/users'
+import { getCaptcha } from '@/api/user/users'
 
 @Component({
   name: 'Login',

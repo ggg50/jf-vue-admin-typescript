@@ -20,6 +20,16 @@ tags:
   - name: users
     description: Users related api.
 paths:
+  /sys/login/login:
+    post: 
+      tags: users
+      operationId: login
+  /sys/menu/views:
+    get:
+      tags: users
+      operationId: getUserMenu
+
+      
   /articles:
     get:
       tags:

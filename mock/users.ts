@@ -60,23 +60,33 @@ export const register = (req: Request, res: Response) => {
 }
 
 export const login = (req: Request, res: Response) => {
-  const { username } = req.body
-  for (const user of userList) {
-    if (user.username === username) {
-      return res.json({
-        code: 'HCOM1000',
-        msg: '处理成功！',
-        data: {
-          token: username + '-token'
-        },
-      })
-    }
-  }
-  return res.status(400).json({
-    code: 'HCOM9999',
-    msg: 'Invalid User'
+  return res.json({
+    code: 'HCOM1000',
+    data: {
+      token: '1589858171459_315085224239169536'
+    },
+    msg: '处理成功！'
   })
 }
+
+// export const login = (req: Request, res: Response) => {
+//   const { username } = req.body // 可以获取 request 里面的东西。
+//   for (const user of userList) {
+//     if (user.username === username) {
+//       return res.json({
+//         code: 'HCOM1000',
+//         msg: '处理成功！',
+//         data: {
+//           token: username + '-token'
+//         },
+//       })
+//     }
+//   }
+//   return res.status(400).json({
+//     code: 'HCOM9999',
+//     msg: 'Invalid User'
+//   })
+// }
 
 export const logout = (req: Request, res: Response) => {
   return res.json({
@@ -148,5 +158,119 @@ export const updateUser = (req: Request, res: Response) => {
 export const deleteUser = (req: Request, res: Response) => {
   return res.json({
     code: 'HCOM1000'
+  })
+}
+
+export const getUserMenu = (req: Request, res: Response) => {
+  return res.json({
+    code: 'HCOM1000',
+    data: {
+      roles: [
+        {
+          createTime: 1500440400000,
+          createUser: '1',
+          roleDesc: '系统管理员',
+          roleId: '13',
+          roleLevel: 1,
+          roleName: 'system',
+          roleSence: 'soa'
+        },
+        {
+          createTime: 1500440400000,
+          createUser: '1',
+          roleDesc: '高级管理权限',
+          roleId: '1',
+          roleLevel: 9,
+          roleName: 'admin',
+          roleSence: 'soa'
+        }
+      ],
+      menus: [
+        {
+          depath: 2,
+          funcIds: '1,2,3',
+          functions: [
+            {
+              funcBg: 'btn btn-success',
+              funcCode: 'add',
+              funcIcon: 'fa fa-plus-circle fz',
+              funcName: '创建',
+              funcSign: 'sys',
+              id: '1'
+            },
+            {
+              funcBg: 'btn btn-danger',
+              funcCode: 'del',
+              funcIcon: 'fa fa-trash',
+              funcName: '删除',
+              funcSign: 'sys',
+              id: '3'
+            }
+          ],
+          isLeaf: 1,
+          isVisible: 0,
+          mclass: '',
+          menuCode: 100200,
+          menuIcon: 'fa-square',
+          menuId: '100',
+          menuIsopen: 0,
+          menuName: '资产融资',
+          menuOrder: 4003,
+          menuSence: 'soa',
+          menuType: 'normal',
+          menuUrl: '/soa/baseinfo/assetFinancing/index',
+          parentId: '91',
+          status: ''
+        },
+        {
+          depath: 1,
+          functions: [
+            {
+              funcBg: 'btn btn-success',
+              funcCode: 'add',
+              funcIcon: 'fa fa-plus-circle fz',
+              funcName: '创建',
+              funcSign: 'sys',
+              id: '1'
+            },
+            {
+              funcBg: 'btn btn-warning',
+              funcCode: 'edit',
+              funcIcon: 'glyphicon glyphicon-pencil',
+              funcName: '修改',
+              funcSign: 'sys',
+              id: '2'
+            }
+          ],
+          isLeaf: 0,
+          isVisible: 0,
+          menuCode: 200000,
+          menuIcon: 'fa-square',
+          menuId: '2',
+          menuIsopen: 0,
+          menuName: '系统管理',
+          menuOrder: 7000,
+          menuSence: 'soa',
+          menuType: 'normal',
+          menuUrl: '',
+          parentId: '0'
+        }
+      ],
+      user: {
+        birthDay: 1218171600000,
+        createTime: 1472619600000,
+        createUser: '1',
+        email: '121282134@qq.com',
+        lastLoginTime: 1514308446000,
+        loginName: 'admin',
+        nickName: '管理员',
+        password: 'f6fdffe48c908deb0f4c3bd36c032e72',
+        phone: '13300001234',
+        sex: 0,
+        state: 0,
+        userId: '1'
+      }
+    },
+    msg: '处理成功！'
   })
 }

@@ -6,6 +6,19 @@ export const getCaptcha = () =>
     method: 'get',
   })
 
+export const login = (data: any) =>
+  request({
+    url: '/users/login',
+    method: 'post',
+    data
+  })
+
+export const getUserMenu = () =>
+  request({
+    url: '/sys/menu/views',
+    method: 'get',
+  })
+
 export const getUsers = (params: any) =>
   request({
     url: '/users',
@@ -37,13 +50,6 @@ export const deleteUser = (username: string) =>
   request({
     url: `/users/${username}`,
     method: 'delete'
-  })
-
-export const login = (data: any) =>
-  request({
-    url: '/users/login',
-    method: 'post',
-    data
   })
 
 export const logout = () =>
