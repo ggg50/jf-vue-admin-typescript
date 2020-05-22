@@ -1,3 +1,9 @@
+export interface IResponse<T> {
+  code: string
+  data: T
+  msg: string
+}
+
 export interface IArticleData {
   id: number
   status: string

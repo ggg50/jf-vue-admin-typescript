@@ -27,9 +27,9 @@ paths:
   /sys/menu/views:
     get:
       tags: users
-      operationId: getUserMenu
+      operationId: getUserInfoAndMenu
 
-      
+
   /articles:
     get:
       tags:

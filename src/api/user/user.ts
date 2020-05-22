@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { ILogin } from '@/types/api/'
 
 export const getCaptcha = () =>
   request({
@@ -6,14 +7,19 @@ export const getCaptcha = () =>
     method: 'get',
   })
 
-export const login = (data: any) =>
+export const login = (data: ILogin) =>
   request({
     url: '/users/login',
     method: 'post',
-    data
+    data: {
+      loginName: data.username,
+      password: data.password,
+      verificationId: data.captchaId,
+      verificationCode: data.captchaCode,
+    }
   })
 
-export const getUserMenu = () =>
+export const getUserInfoAndMenu = () =>
   request({
     url: '/sys/menu/views',
     method: 'get',
