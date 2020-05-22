@@ -263,7 +263,8 @@ export default class extends Vue {
 
   private getImage() {
     getCaptcha().then(res => {
-      this.imgSrc = 'data:image/jpeg;base64,' + res.data.base64
+      // this.imgSrc = 'data:image/jpeg;base64,' + res.data.base64
+      this.imgSrc = res.data.base64
       this.captchaId = res.data.verificationId
     })
   }

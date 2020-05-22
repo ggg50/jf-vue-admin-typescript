@@ -136,7 +136,13 @@ import { generateRandom } from '@/utils/common/random'
 })
 
 export default class extends Vue {
-  private testColumn = ['DokD-date$t-100%', 'ADDRESS-address-200%', 'NAME-name-100%', 'momey-number$a-300%']
+  private testColumn = [
+    'DokD-date$t-100%',
+    'ADDRESS-address-200%',
+    'NAME-name-100%',
+    'momey-number$a-300%'
+  ]
+
   private testData = [
     {
       date: '2016-05-02',
@@ -182,7 +188,7 @@ export default class extends Vue {
   }
 
   test() {
-    this.t = generateRandom('name', 10, 30)
+    this.t = generateRandom('money')
     this.ok()
   }
 

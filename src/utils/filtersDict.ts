@@ -1,8 +1,6 @@
 
 import Vue from 'vue'
 
-export type IFilterKey = '$d' | '$t' | '$m' | '$a'
-
 export const filtersDict = { // Customize your filters dict
   $d: 'dateFormatter',
   $t: 'timeFormatter',
@@ -10,10 +8,13 @@ export const filtersDict = { // Customize your filters dict
   $a: 'toThousandFilter'
 }
 
+export type IFilterKey = keyof typeof filtersDict
+
 const filterKeys = Object.keys(filtersDict)
 
 export function getGlobalFilter(key: IFilterKey, vm: Vue): Function {
   if (!filterKeys.includes(key)) console.log(`current key ${key} no found, which mean there is no present filter in dict match with it`)
+
   const _filters = vm.$options.filters
   const _filterName = filtersDict[key]
   if (_filters?.[_filterName]) {
