@@ -21,9 +21,9 @@ const randomGenerator = {
   line: randomLine,
 }
 
-type RandomKey = keyof typeof randomGenerator
+export type RandomKey = keyof typeof randomGenerator
 
-const typesList = Object.keys(randomGenerator)
+export const typesList = Object.keys(randomGenerator)
 
 /**
  *
@@ -54,7 +54,10 @@ function randomEmail() {
 }
 
 function randomUrl() {
-  return faker.internet.url()
+  faker.locale = 'en'
+  const _url = faker.internet.url()
+  faker.locale = 'zh_CN'
+  return _url
 }
 
 function randomName() {

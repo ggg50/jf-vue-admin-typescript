@@ -188,7 +188,7 @@ export default class extends Vue {
   }
 
   test() {
-    this.t = generateRandom('money')
+    this.t = generateRandom('url')
     this.ok()
   }
 

@@ -1,29 +1,40 @@
 <template>
-  <div
-    class="devLog"
-    :class="{hidden: isHidden}"
-    @click.stop="onShow"
-  >
-    当前路由：{{ routeName }}
-    <div
-      class="close"
-      @click.stop="onHide"
-    >
+  <div class="devLog" :class="{hidden: isHidden}" @click.stop="onShow">
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="0" name="0">
+        当前路由：{{ routeName }}
+        <template v-for="item in showData">
+          <div :key="item.key" :title="item.description">
+            {{ item.vm[item.name] }}
+          </div>
+        </template>
+      </el-tab-pane>
+      <el-tab-pane label="1" name="1">
+        <template v-for="type in typesList">
+          <span :key="type" @click="copyContent(type, $event)">
+            <el-button type="primary" plain>
+              {{ type }}
+            </el-button>
+          </span>
+        </template>
+      </el-tab-pane>
+      <el-tab-pane label="2" name="2">
+        2
+      </el-tab-pane>
+      <el-tab-pane label="3" name="3">
+        3
+      </el-tab-pane>
+    </el-tabs>
+    <div class="close" @click.stop="onHide">
       <i class="el-icon-circle-close" />
     </div>
-    <template v-for="item in showData">
-      <div
-        :key="item.key"
-        :title="item.description"
-      >
-        {{ item.vm[item.name] }}
-      </div>
-    </template>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { IDevDataItem } from '@/types/dev'
+import { generateRandom, typesList, RandomKey } from '@/utils/common/random'
+import { handleClipboard } from '@/utils/clipboard'
 
 @Component({
   name: 'DevLog',
@@ -33,8 +44,11 @@ import { IDevDataItem } from '@/types/dev'
 export default class DevLog extends Vue {
   rootVm: Vue | null = null
   devData: IDevDataItem[] = []
-  isHidden = true
+  isHidden = false
   currentPressKeys: number[] = []
+  typesList = typesList
+
+  private activeName = '1'
 
   get routeName(): string {
     if (this.rootVm && this.rootVm.$route) {
@@ -54,14 +68,6 @@ export default class DevLog extends Vue {
     }
   }
 
-  onShow() {
-    if (this.isHidden) this.isHidden = false
-  }
-
-  onHide() {
-    this.isHidden = true
-  }
-
   created() {
     document.addEventListener('keydown', event => {
       const code: number = event.keyCode
@@ -78,6 +84,19 @@ export default class DevLog extends Vue {
       }
     })
   }
+
+  onShow() {
+    if (this.isHidden) this.isHidden = false
+  }
+
+  onHide() {
+    this.isHidden = true
+  }
+
+  copyContent(type: RandomKey, event: MouseEvent) {
+    handleClipboard(generateRandom(type), event)
+    // clip
+  }
 }
 
 </script>
@@ -87,7 +106,7 @@ $backgroundColor: rgba(141, 137, 137, 0.6);
 $backgroundColorDeep: rgba(141, 137, 137, 1);
 
 .devLog {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   width: 300px;
@@ -99,7 +118,7 @@ $backgroundColorDeep: rgba(141, 137, 137, 1);
   border-radius: 5px 0 5px 5px;
   line-height: 1.4em;
   transition: all 0.3s;
-  overflow: hidden;
+  overflow: auto;
 
   &:hover {
     width: 300px;
