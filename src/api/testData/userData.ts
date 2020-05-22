@@ -98,7 +98,6 @@ export const userInfoAndMenuData = {
     lastLoginTime: 1514308446000,
     loginName: 'admin',
     nickName: '管理员',
-    password: 'f6fdffe48c908deb0f4c3bd36c032e72',
     phone: '13300001234',
     sex: 0,
     state: 0,

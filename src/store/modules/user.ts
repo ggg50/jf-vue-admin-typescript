@@ -1,5 +1,5 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { login, logout, getUserInfo } from '@/api/user/user'
+import { login, logout, getUserInfoAndMenu } from '@/api/user/user'
 import { getToken, setToken, removeToken } from '@/utils/cookies'
 import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
@@ -71,23 +71,26 @@ class User extends VuexModule implements IUserState {
   }
 
   @Action
-  public async GetUserInfo() {
+  public async GetUserInfoAndMenu() {
     if (this.token === '') {
-      throw Error('GetUserInfo: token is undefined!')
+      throw Error('getUserInfoAndMenu: token is undefined!')
     }
-    const { data } = await getUserInfo({ /* Your params here */ })
+    const { data } = await getUserInfoAndMenu()
     if (!data) {
       throw Error('Verification failed, please Login again.')
     }
-    const { roles, name, avatar, introduction, email } = data.user
+
+    const { loginName, email } = data.user
+    const roles = data.roles.map((item: any) => item.roleName)
+
     // roles must be a non-empty array
     if (!roles || roles.length <= 0) {
-      throw Error('GetUserInfo: roles must be a non-null array!')
+      throw Error('getUserInfoAndMenu: roles must be a non-null array!')
     }
     this.SET_ROLES(roles)
-    this.SET_NAME(name)
-    this.SET_AVATAR(avatar)
-    this.SET_INTRODUCTION(introduction)
+    this.SET_NAME(loginName)
+    // this.SET_AVATAR(avatar)
+    // this.SET_INTRODUCTION(introduction)
     this.SET_EMAIL(email)
   }
 
@@ -97,7 +100,7 @@ class User extends VuexModule implements IUserState {
     const token = role + '-token'
     this.SET_TOKEN(token)
     setToken(token)
-    await this.GetUserInfo()
+    await this.GetUserInfoAndMenu()
     resetRouter()
     // Generate dynamic accessible routes based on roles
     PermissionModule.GenerateRoutes(this.roles)

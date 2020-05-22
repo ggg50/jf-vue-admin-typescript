@@ -9,7 +9,7 @@
       class="close"
       @click.stop="onHide"
     >
-      X
+      <i class="el-icon-circle-close" />
     </div>
     <template v-for="item in showData">
       <div
@@ -33,7 +33,7 @@ import { IDevDataItem } from '@/types/dev'
 export default class DevLog extends Vue {
   rootVm: Vue | null = null
   devData: IDevDataItem[] = []
-  isHidden = false
+  isHidden = true
   currentPressKeys: number[] = []
 
   get routeName(): string {
@@ -132,5 +132,9 @@ $backgroundColorDeep: rgba(141, 137, 137, 1);
     font-size: 20px;
     cursor: pointer;
   }
+}
+
+.el-icon-circle-close {
+  font-size: 1.3em;
 }
 </style>

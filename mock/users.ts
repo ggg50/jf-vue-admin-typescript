@@ -1,7 +1,7 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
 import { IUserData } from '../src/api/types'
-import { userInfoAndMenuData, captchaData } from '../src/api/testData/userData'
+import { userInfoAndMenuData, captchaData } from './testData'
 
 const userList: IUserData[] = [
   {
