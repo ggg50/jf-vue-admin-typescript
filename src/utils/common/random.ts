@@ -27,7 +27,7 @@ export const typesList = Object.keys(randomGenerator)
 
 /**
  *
- * @param n random number long
+ * @param n long of random number
  */
 function randomNumber(n = 6): number {
   return randomNumberWithExactLong(n)
