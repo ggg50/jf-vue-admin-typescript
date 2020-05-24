@@ -3,11 +3,17 @@
     <template v-for="(value, key) in innerForm">
       {{ innerDict[key].rules ? true : false }}
       <el-form-item :key="key" :label="innerDict[key].label" :prop="key" :required="false">
-        <el-input v-if="innerDict[key].type === 'input'" v-model="innerForm[key]" />
+        <el-col v-if="innerDict[key].type === 'input'" :span="24">
+          <el-input v-model="innerForm[key]" />
+        </el-col>
 
-        <el-input v-if="innerDict[key].type === 'number'" v-model="innerForm[key]" type="number" />
+        <el-col v-else-if="innerDict[key].type === 'number'" :span="24">
+          <el-input v-model="innerForm[key]" type="number" />
+        </el-col>
 
-        <el-input v-if="innerDict[key].type === 'textarea'" v-model="innerForm[key]" type="textarea" />
+        <el-col v-else-if="innerDict[key].type === 'textarea'" :span="24">
+          <el-input v-model="innerForm[key]" type="textarea" />
+        </el-col>
 
         <el-col v-else-if="innerDict[key].type === 'time'" :span="24">
           <el-time-picker v-model="innerForm[key]" style="width: 100%;" />
@@ -29,19 +35,25 @@
           </el-col>
         </template>
 
-        <el-switch v-else-if="innerDict[key].type === 'switch'" v-model="innerForm[key]" />
+        <el-col v-else-if="innerDict[key].type === 'switch'" :span="24">
+          <el-switch v-model="innerForm[key]" />
+        </el-col>
 
-        <el-checkbox-group v-else-if="innerDict[key].type === 'checkbox'" v-model="ruleForm.type">
-          <el-checkbox label="美食/餐厅线上活动" name="type" />
-          <el-checkbox label="地推活动" name="type" />
-          <el-checkbox label="线下主题活动" name="type" />
-          <el-checkbox label="单纯品牌曝光" name="type" />
-        </el-checkbox-group>
+        <el-col v-else-if="innerDict[key].type === 'checkbox'" :span="24">
+          <el-checkbox-group v-model="ruleForm.type">
+            <el-checkbox label="美食/餐厅线上活动" name="type" />
+            <el-checkbox label="地推活动" name="type" />
+            <el-checkbox label="线下主题活动" name="type" />
+            <el-checkbox label="单纯品牌曝光" name="type" />
+          </el-checkbox-group>
+        </el-col>
 
-        <el-radio-group v-else-if="innerDict[key].type === 'radio'" v-model="ruleForm.resource">
-          <el-radio label="线上品牌商赞助" />
-          <el-radio label="线下场地免费" />
-        </el-radio-group>
+        <el-col v-else-if="innerDict[key].type === 'radio'" :span="24">
+          <el-radio-group v-model="ruleForm.resource">
+            <el-radio label="线上品牌商赞助" />
+            <el-radio label="线下场地免费" />
+          </el-radio-group>
+        </el-col>
       </el-form-item>
     </template>
     <el-form-item />
@@ -62,6 +74,18 @@
 
 //! require relative validate, such as password
 
+/*
+
+# Form item options:
+  key: key of item, if current item is range-type item (such as dateRange), it should be an array includes 'start' key and 'end' key, just like ['start', 'end']
+  label: label
+  type: item type
+  format: use to custem data format, only for date, time, dateRange
+  rules: item rules, view element-ui for more detail
+  random: specify the random data type, if this property isn't present, there will be an 'intelligent' automatic detection ...
+  randomFormat: extra args for random data generation, if required more than one args, value should be an array
+*/
+
 import { Prop, Vue, Component, Watch } from 'vue-property-decorator'
 import { generateRandom, typesList, RandomKey } from '@/utils/common/random'
 import moment from 'moment'
@@ -77,6 +101,7 @@ export interface IFormItem {
   random?: RandomKey
   randomFormat?: any
 }
+
 interface IObject {
   [prop: string]: any
 }
@@ -93,12 +118,12 @@ export default class extends Vue {
   @Prop({ required: true }) formOptions!: IFormItem[]
 
   private innerForm: IObject = {}
-  resultForm: IObject = {}
   private innerDict: IObject = {}
   private innerRules: IRulesObject = {}
-  private typesReg = new RegExp(typesList.join('|'), 'i')
+  private randomTypesReg = new RegExp(typesList.join('|'), 'i')
+  resultForm: IObject = {} // the output data when submiting
 
-  @Watch('innerForm', { deep: true })
+  @Watch('innerForm', { deep: true, immediate: true })
   createOutputForm() {
     const _data: IObject = {}
     for (const key in this.innerForm) {
@@ -118,30 +143,27 @@ export default class extends Vue {
     }
     this.resultForm = _data
 
-    console.log(JSON.stringify(this.innerForm, null, 2))
-    console.log(JSON.stringify(this.resultForm, null, 2))
+    // console.log(JSON.stringify(this.innerForm, null, 2))
+    // console.log(JSON.stringify(this.resultForm, null, 2))
   }
-
-  // set innerForm() {
-
-  // }
 
   @Watch('formOptions', { deep: true, immediate: true })
   setInnerData() {
     const _form: IObject = {}
     const _dict: IObject = {}
     const _rules: IRulesObject = {}
+
     this.formOptions.forEach(item => {
       if (/range/i.test(item.type)) {
         if (item.key.length !== 2) {
           console.error(`${this.$options.name}: type ${item.type} required key property is an array with two string item `)
         } else {
-          // item.key[0] use any one of the keys list
+          // item.key[0]: use one of the two keys
           _form[item.key[0]] = [null, null]
           _dict[item.key[0]] = item
           _rules[item.key[0]] = item.rules || []
 
-          // add range item validator
+          // add range-type item validator
           const _firstItem = _rules[item.key[0]] && _rules[item.key[0]][0]
           if (_firstItem) {
             _rules[item.key[0]][0] = {
@@ -175,8 +197,8 @@ export default class extends Vue {
     const _item = this.innerDict[key]
     const _type: RandomKey = _item.random
       ? _item.random
-      : this.typesReg.test(_item.type)
-        ? (this.typesReg.exec(_item.type) as any)[0]
+      : this.randomTypesReg.test(_item.type)
+        ? (this.randomTypesReg.exec(_item.type) as any)[0]
         : 'text'
 
     const _random = Array.isArray(_item.randomFormat)
