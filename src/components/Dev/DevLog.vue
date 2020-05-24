@@ -50,10 +50,10 @@ import { clipboard } from '../../directives'
 export default class DevLog extends Vue {
   rootVm: Vue | null = null
   devData: IDevDataItem[] = []
-  isHidden = false
+  isHidden = true
   typesList = typesList
 
-  //! attention, the first four key is used to check tabs switching
+  //! attention, the first four key(code) is used to check for tabs switching
   commonCodes = [49, 50, 51, 52, 192, 9, 66]// keycode: 1-49 2-50 3-51 4-52 d-68 ~-192 tab-9 b-66
   featureCodes = [68, 17] // keycode: d-68 ctr-17
   allCode = [...this.commonCodes, ...this.featureCodes]
