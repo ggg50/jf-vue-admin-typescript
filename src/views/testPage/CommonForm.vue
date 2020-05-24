@@ -51,7 +51,6 @@
 
 <script lang="ts">
 import { Prop, Vue, Component, Watch } from 'vue-property-decorator'
-import { IFilterKey, getGlobalFilter } from '@/utils/filtersDict'
 
 interface IFormItem {
   key: string

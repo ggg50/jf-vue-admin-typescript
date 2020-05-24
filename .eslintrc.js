@@ -46,7 +46,7 @@ module.exports = {
         "max": 1,
         "allowFirstLine": true
       }
-    }]
+    }],
   },
   overrides: [
     {
