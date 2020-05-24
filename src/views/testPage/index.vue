@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 // import CommonTable from '@/components/Table/CommonTable.vue'
-import CommonForm from './CommonForm.vue'
+import CommonForm, { IFormItem } from './CommonForm.vue'
 
 @Component({
   name: 'TextPage',
@@ -17,7 +17,7 @@ import CommonForm from './CommonForm.vue'
 })
 
 export default class extends Vue {
-  private testData = [
+  private testData: IFormItem[] = [
     {
       type: 'input',
       key: 'name',
@@ -29,20 +29,19 @@ export default class extends Vue {
       random: 'text',
     },
     {
-      type: 'date',
-      key: 'date',
+      type: 'time',
+      key: 'time',
       label: '日期',
       rules: [
         { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
       ],
-      random: 'number,3'
     },
     {
       type: 'dateRange',
-      key: 'time',
+      key: ['start', 'end'],
       label: '时间期限',
       rules: [
-        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        { required: true, message: '请选择日期', trigger: 'change' }
       ],
     }
   ]

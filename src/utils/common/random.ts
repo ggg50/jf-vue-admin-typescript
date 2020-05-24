@@ -18,6 +18,7 @@ const randomGenerator = {
   date: randomDate,
   time: randomTime,
   timestamp: randomTimestamp,
+  rawTime: randomRawTime,
   line: randomLine,
 }
 
@@ -94,6 +95,10 @@ function randomTimestamp(day = 60): number {
   const _end = Date.now()
   const _start = _end - _distance
   return createNumber(_distance) + _start
+}
+
+function randomRawTime(day = 60): Date {
+  return new Date(randomTimestamp(day))
 }
 
 /**
