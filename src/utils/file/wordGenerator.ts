@@ -110,31 +110,16 @@ Paragraph options:
 indent: {firstLine: 360}, //行首缩进 …… 数字好大 ……
 alignment: 'center', //居中
 alignment: 'end', //右对齐
+
+# base usage
+let doc = new DocxGenerator()
+
+doc.asyncCreateWordBlobFromText(text)
+.then(blob => {})
+
+doc.asyncCreateWordBlobFromTextAndDownload(text)
+
 */
-
-// let keys = ['left', 'right', 'center', 'common'] // 这个主要是给 options / reg 访问的时候，key 做个排序
-
-// let options = {
-//     left: {
-//         alignment: 'left',
-//     },
-//     center: {
-//         alignment: 'center',
-//     },
-//     right: {
-//         alignment: 'right',
-//     },
-//     common: {
-//         indent: {firstLine: 360},
-//     }
-// }
-
-// let reg = {
-//     left: /::: ?hljs-left\n((.*\n)*?):::/,
-//     center: /::: ?hljs-center\n((.*\n)*?):::/,
-//     right: /::: ?hljs-right\n((.*\n)*?):::/,
-//     common: /(.*\n?)/, // 匹配不是以上格式（没有 ::: 开头）的
-// }
 
 type Key = 'left' | 'right' | 'center' | 'common'
 type RegsObject = {
@@ -271,7 +256,3 @@ export class DocxGenerator {
     this.doc = new Document()
   }
 }
-
-const a = new DocxGenerator()
-
-a.asyncCreateWordBlobFromTextAndDownload(testText, 'abc.doc')

@@ -87,7 +87,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { getArticles } from '@/api/articles'
 import { IArticleData } from '@/api/types'
 import { formatJson } from '@/utils'
-import { exportJson2Excel } from '@/utils/excel'
+import { exportJson2Excel } from '@/utils/file/excel'
 import { Table } from 'element-ui'
 
 @Component({
