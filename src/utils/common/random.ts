@@ -73,7 +73,7 @@ function randomText() {
 }
 
 function randomMoney(sign = '$') {
-  return sign + ' ' + createRandomFromRegExp(/[1-9][0-9]{1,3}(,[0-9]{3}){0,3}(\.[1-9][1-9])?/)
+  return sign + ' ' + createRandomFromRegExp(/[1-9]\d{0,2}(,\d{3}){0,3}(\.\d{1,2})?$/)
 }
 
 /**

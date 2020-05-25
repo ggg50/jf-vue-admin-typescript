@@ -1,7 +1,6 @@
 <template>
   <el-form ref="form" :model="innerForm" label-width="80px" :rules="innerRules">
     <template v-for="(value, key) in innerForm">
-      {{ innerDict[key].rules ? true : false }}
       <el-form-item :key="key" :label="innerDict[key].label" :prop="key" :required="false">
         <el-col v-if="innerDict[key].type === 'input'" :span="24">
           <el-input v-model="innerForm[key]" />
@@ -143,8 +142,8 @@ export default class extends Vue {
     }
     this.resultForm = _data
 
-    // console.log(JSON.stringify(this.innerForm, null, 2))
-    // console.log(JSON.stringify(this.resultForm, null, 2))
+    console.log(JSON.stringify(this.innerForm, null, 2))
+    console.log(JSON.stringify(this.resultForm, null, 2))
   }
 
   @Watch('formOptions', { deep: true, immediate: true })
