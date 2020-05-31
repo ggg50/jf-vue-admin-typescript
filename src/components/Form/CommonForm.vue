@@ -1,67 +1,54 @@
 <template>
-  <el-form ref="form" :model="innerForm" label-width="80px" :rules="innerRules">
-    <template v-for="(value, key) in innerForm">
-      <el-form-item :key="key" :label="innerDict[key].label" :prop="key" :required="false">
-        <el-col v-if="innerDict[key].type === 'input'" :span="24">
-          <el-input v-model="innerForm[key]" />
-        </el-col>
+  <el-form ref="form" :model="innerForm" label-width="auto" :rules="innerRules" :inline="false">
+    <el-row :gutter="90">
+      <template v-for="(value, key) in innerForm">
+        <el-col :key="key" :sm="smCol" :xl="xlCol">
+          <el-form-item :key="key" :label="innerDict[key].label" :prop="key" :required="innerDict[key].required !== false" :span="8">
+            <el-input v-if="innerDict[key].type === 'input'" :key="key" v-model="innerForm[key]" style="width: 100%;" />
 
-        <el-col v-else-if="innerDict[key].type === 'number'" :span="24">
-          <el-input v-model="innerForm[key]" type="number" />
-        </el-col>
+            <el-input v-else-if="innerDict[key].type === 'number'" v-model="innerForm[key]" type="number" />
 
-        <el-col v-else-if="innerDict[key].type === 'textarea'" :span="24">
-          <el-input v-model="innerForm[key]" type="textarea" />
-        </el-col>
+            <el-input v-else-if="innerDict[key].type === 'textarea'" v-model="innerForm[key]" type="textarea" />
 
-        <el-col v-else-if="innerDict[key].type === 'time'" :span="24">
-          <el-time-picker v-model="innerForm[key]" style="width: 100%;" />
-        </el-col>
+            <el-time-picker v-else-if="innerDict[key].type === 'time'" v-model="innerForm[key]" style="width: 100%;" />
 
-        <el-col v-else-if="innerDict[key].type === 'date'" :span="24">
-          <el-date-picker v-model="innerForm[key]" type="date" placeholder="选择日期" />
-        </el-col>
+            <el-date-picker v-else-if="innerDict[key].type === 'date'" v-model="innerForm[key]" type="date" placeholder="选择日期" />
 
-        <template v-else-if="innerDict[key].type === 'dateRange'">
-          <el-col :span="11">
-            <el-date-picker v-model="innerForm[key][0]" type="date" placeholder="选择日期" style="width: 100%;" />
-          </el-col>
-          <el-col class="line" :span="2">
-            -
-          </el-col>
-          <el-col :span="11">
-            <el-date-picker v-model="innerForm[key][1]" type="date" placeholder="选择日期" style="width: 100%;" />
-          </el-col>
-        </template>
+            <el-date-picker
+              v-else-if="innerDict[key].type === 'dateRange'"
+              v-model="innerForm[key]"
+              type="monthrange"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              style="width: 100%;"
+            />
 
-        <el-col v-else-if="innerDict[key].type === 'switch'" :span="24">
-          <el-switch v-model="innerForm[key]" />
-        </el-col>
+            <el-switch v-else-if="innerDict[key].type === 'switch'" v-model="innerForm[key]" />
 
-        <el-col v-else-if="innerDict[key].type === 'checkbox'" :span="24">
-          <el-checkbox-group v-model="ruleForm.type">
-            <el-checkbox label="美食/餐厅线上活动" name="type" />
-            <el-checkbox label="地推活动" name="type" />
-            <el-checkbox label="线下主题活动" name="type" />
-            <el-checkbox label="单纯品牌曝光" name="type" />
-          </el-checkbox-group>
-        </el-col>
+            <el-checkbox-group v-else-if="innerDict[key].type === 'checkbox'" v-model="ruleForm.type">
+              <el-checkbox label="美食/餐厅线上活动" name="type" />
+              <el-checkbox label="地推活动" name="type" />
+              <el-checkbox label="线下主题活动" name="type" />
+              <el-checkbox label="单纯品牌曝光" name="type" />
+            </el-checkbox-group>
 
-        <el-col v-else-if="innerDict[key].type === 'radio'" :span="24">
-          <el-radio-group v-model="ruleForm.resource">
-            <el-radio label="线上品牌商赞助" />
-            <el-radio label="线下场地免费" />
-          </el-radio-group>
+            <el-radio-group v-else-if="innerDict[key].type === 'radio'" v-model="ruleForm.resource">
+              <el-radio label="线上品牌商赞助" />
+              <el-radio label="线下场地免费" />
+            </el-radio-group>
+          </el-form-item>
         </el-col>
-      </el-form-item>
-    </template>
-    <el-form-item />
+      </template>
+    </el-row>
 
     <el-form-item>
       <el-button type="primary" @click="onSubmit">
-        立即创建
+        {{ submitText }}
       </el-button>
-      <el-button>取消</el-button>
+      <el-button v-if="enableCancel" @click="$emit('cancel')">
+        取消
+      </el-button>
       <el-button type="primary" @click="fillRandom">
         自动填充
       </el-button>
@@ -75,6 +62,8 @@
 
 /*
 
+cancel event
+
 # Form item options:
   key: key of item, if current item is range-type item (such as dateRange), it should be an array includes 'start' key and 'end' key, just like ['start', 'end']
   label: label
@@ -83,6 +72,37 @@
   rules: item rules, view element-ui for more detail
   random: specify the random data type, if this property isn't present, there will be an 'intelligent' automatic detection ...
   randomFormat: extra args for random data generation, if required more than one args, value should be an array
+
+# demo data
+
+[
+    {
+      type: 'input',
+      key: 'name',
+      label: '姓名',
+      rules: [
+        { required: true, message: '请输入活动名称', trigger: 'blur' },
+        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+      ],
+      random: 'text',
+    },
+    {
+      type: 'time',
+      key: 'time',
+      label: '日期',
+      rules: [
+        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+      ],
+    },
+    {
+      type: 'dateRange',
+      key: ['start', 'end'],
+      label: '时间期限',
+      rules: [
+        { required: true, message: '请选择日期', trigger: 'change' }
+      ],
+    }
+  ]
 */
 
 import { Prop, Vue, Component, Watch } from 'vue-property-decorator'
@@ -99,6 +119,7 @@ export interface IFormItem {
   rules?: any[]
   random?: RandomKey
   randomFormat?: any
+  required?: any // required in default
 }
 
 interface IObject {
@@ -115,12 +136,23 @@ interface IRulesObject {
 
 export default class extends Vue {
   @Prop({ required: true }) formOptions!: IFormItem[]
+  @Prop({ default: false }) enableCancel!: boolean
+  @Prop({ default: '提交' }) submitText!: string
+  @Prop({ default: false }) inline!: boolean
 
   private innerForm: IObject = {}
   private innerDict: IObject = {}
   private innerRules: IRulesObject = {}
   private randomTypesReg = new RegExp(typesList.join('|'), 'i')
   resultForm: IObject = {} // the output data when submiting
+
+  get smCol() {
+    return this.inline ? 8 : 24
+  }
+
+  get xlCol() {
+    return this.inline ? 6 : 24
+  }
 
   @Watch('innerForm', { deep: true, immediate: true })
   createOutputForm() {
@@ -141,9 +173,6 @@ export default class extends Vue {
       }
     }
     this.resultForm = _data
-
-    console.log(JSON.stringify(this.innerForm, null, 2))
-    console.log(JSON.stringify(this.resultForm, null, 2))
   }
 
   @Watch('formOptions', { deep: true, immediate: true })

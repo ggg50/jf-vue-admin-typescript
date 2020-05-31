@@ -41,7 +41,7 @@ module.exports = {
     "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": false }],
     'comma-dangle': [0, 'never'], // 关掉最后一个 , 的报错\
     "vue/max-attributes-per-line": ["error", {
-      "singleline": 4, // 一行最多 n 个
+      "singleline": 5, // 一行最多 n 个
       "multiline": {
         "max": 1,
         "allowFirstLine": true
