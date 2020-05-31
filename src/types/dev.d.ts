@@ -14,16 +14,14 @@ interface IDevPicker {
   bindAppRoot(vm: Vue): void
 }
 
-interface IDevDataItem {
-  key: string
-  name: string
-  routes: string[]
-  description?: string
-  vm: Vue | null
-}
-
 interface IDevOptionsItem {
   name: string
   routes: string[]
+  tab?: number
   description?: string
+}
+
+interface IDevDataItem extends IDevOptionsItem{
+  key: string
+  vm: Vue | null
 }

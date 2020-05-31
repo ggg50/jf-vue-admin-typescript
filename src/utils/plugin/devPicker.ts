@@ -61,7 +61,7 @@ export default {
 
       if (devPicker.target) {
         // 把 optionsList 传给devPicker
-        (_optionsList as IDevOptionsItem[]).forEach((item: IDevOptionsItem) => { // 用 as 是为了阻止报错
+        (_optionsList as IDevOptionsItem[]).forEach((item: IDevOptionsItem) => {
           const _item: IDevDataItem = {
             ...item,
             vm,
