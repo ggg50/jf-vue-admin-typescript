@@ -1,113 +1,142 @@
-import faker from 'faker'
-import RandExp from 'randexp'
-import moment from 'moment'
-faker.locale = 'zh_CN'
 
-const randomGenerator = {
-  number: randomNumber,
-  phone: randomPhone,
-  zip: randomZip,
-  city: randomCity,
-  img: randomImg,
-  email: randomEmail,
-  url: randomUrl,
-  name: randomName,
-  color: randomColor,
-  text: randomText,
-  money: randomMoney,
-  date: randomDate,
-  time: randomTime,
-  line: randomLine,
-}
+// 自动生成权限的代码
 
-type RandomKey = keyof typeof randomGenerator
+/*
+实现的功能
+从递归的层级变成一级，同时保持父子关系
 
-const typesList = Object.keys(randomGenerator)
+*/
 
-function randomNumber(n = 3): number {
-  return randomNumberWithExactLong(n)
-}
+// let permissionList = getPermissionList()
 
-function randomPhone() {
-  return createRandomFromRegExp(/1[3-9]\d{9}/)
-}
+import { data as permissionList } from '@/config/router.config'
 
-function randomZip() {
-  return createRandomFromRegExp(/[1-9][0-9]{5}/)
-}
+export function getPermissionList() {
+  const nameList = []; const permissionList = []
 
-function randomCity() {
-  return faker.address.city()
-}
-
-function randomImg() {
-  return faker.image.image()
-}
-
-function randomEmail() {
-  return faker.internet.email()
-}
-
-function randomUrl() {
-  return faker.internet.url()
-}
-
-function randomName() {
-  return faker.name.lastName()
-}
-function randomColor() {
-  return faker.commerce.color()
-}
-
-function randomText() {
-  return faker.lorem.word()
-}
-
-function randomMoney(sign = '$') {
-  return sign + ' ' + createRandomFromRegExp(/[1-9][0-9]{1,3}(,[0-9]{3}){0,3}(\.[1-9][1-9])?/)
-}
-
-function randomDate(day = 60, format = 'YYYY-MM-DD') {
-  return moment(createTimestamp(day)).format(format)
-}
-
-function randomTime(day = 60, format = 'YYYY-MM-DD HH:mm:ss') {
-  return moment(createTimestamp(day)).format(format)
-}
-
-function randomLine(min = 20, max = 30): string {
-  let _text = faker.lorem.words()
-  for (; _text.length < min;) {
-    _text += faker.lorem.words().substring(0, max)
+  // 预处理，生成权限树
+  function getPermission(routerTree) {
+    return routerTree.map(getMetaAndChild)
   }
-  return _text
-}
 
-function createTimestamp(day = 60): number {
-  const _distance = day * 24 * 60 * 60 * 1000
-  const _end = Date.now()
-  const _start = _end - _distance
-  return createNumber(_distance) + _start
-}
+  function getMetaAndChild(item, index) {
+    // if(item.children){
+    //   console.log(item.children)
+    //   item.children.forEach(getMetaAndChild)
+    // }
 
-function randomNumberWithExactLong(n: number): number {
-  return (createNumber(8.99) + 1) * Math.pow(10, n - 1) + createNumber(Math.pow(10, n - 1) - 1)
-}
+    const permissionName = item.meta && item.meta.permission && item.meta.permission[0]
+    if (!permissionName || nameList.indexOf(permissionName) > -1) return {} // 没有 permissionName 或者重复的去掉
+    nameList.push(permissionName)
 
-function createNumber(number: number): number {
-  return Math.floor(Math.random() * number)
-}
+    if (!item.meta || !item.meta.title || !item.meta.permission) {
+      return {}
+    }
 
-function createRandomFromRegExp(reg: RegExp): any {
-  return new RandExp(reg).gen()
-}
-
-export function generateRandom(type: RandomKey, ...format: any) {
-  if (!typesList.includes(type)) {
-    console.warn(`current random type '${type}' not found, only these type are agree: ${typesList}`)
-    return ''
+    return ({
+      text: item.meta && item.meta.title,
+      name: item.meta && item.meta.permission && item.meta.permission[0],
+      children: item.children ? item.children.map(getMetaAndChild) : undefined
+    })
   }
-  const randomFn: any = randomGenerator[type]
 
-  return randomFn(...format)
+  const treeData = getPermission(asyncRouterMap)
+
+  function fillRelation(item, parentName) {
+    if (item.name && parentName) item.parent = parentName
+  }
+
+  // tree，获取的数据格式，直接返回一个 list
+  function fillItemToPermissionList(tree, parentName) {
+    tree.forEach(item => {
+      permissionList.push({
+        name: item.name,
+        text: item.text,
+        parent: parentName,
+      })
+      if (item.children) {
+        fillItemToPermissionList(item.children, item.name)
+      }
+    })
+  }
+
+  fillItemToPermissionList(treeData, '')
+
+  return permissionList.filter(item => item.name)
+
+  // api - createMenuItem
+  // treeData.forEach(item => {
+
+  // })
+
+  // 创建的通用函数-调用 api
+  function innerCreateMainMenu(item, index) {
+    return createMenuItem({
+      menu_isopen: 0,
+      name: item.meta || item.meta.permission || item.meta.permission[0],
+      menu_order: index,
+      is_leaf: 0
+    })
+  }
 }
+
+export const data = getPermissionList()
+
+autoCreateMenu(permissionList)
+
+function autoCreateMenu(rawList) {
+  getMenu()
+    .then(res => {
+      const currentMenu = res.data
+      const currentMenuNameList = res.data.map(item => item.menuUrl)
+
+      if (currentMenuNameList.length === 0) {
+        createMenuItem({ name: '首页', key: 'root' })
+          .then(res => { autoCreateMenu(permissionList) })
+      } else {
+        console.log('currentMenuNameList', currentMenuNameList)
+        let currentItem
+        let parentId
+
+        const hasNew = rawList.some(item => {
+          if (currentMenuNameList.indexOf(item.name) === -1 && currentMenuNameList.indexOf(item.parent) > -1) {
+            console.log('当前 item', item)
+            currentItem = item
+            parentId = currentMenu[currentMenuNameList.indexOf(item.parent)].id
+
+            return true
+          }
+          return false
+        })
+
+        console.log('需要新加的 item', currentItem)
+        console.log('parentId', parentId)
+
+        if (hasNew) {
+          createNew(currentItem, parentId)
+            .then(res => { autoCreateMenu(permissionList) })
+        }
+      }
+    })
+}
+
+function createNew(item, parentId) {
+  return createMenuItem({
+    name: item.text,
+    key: item.name,
+    parent: parentId
+  })
+}
+
+// deleteMenu('5ea29934e32ffc7342ad2515')
+// deleteMenu('5ea28725e32ffc7342ad24cd')
+
+// menu_code - 菜单编号
+// menu_name - 菜单名
+// menu_isopen - 启用状态
+// menu_url - 菜单路径
+// menu_icon - 前段需要的icon
+// menu_order - 菜单排序 对应级别123456
+// parent_id - 菜单父级id 如没有则为0
+// is_leaf - 是否为主菜单0主1表示不是
+// func_ids - 按钮id集合（待定）

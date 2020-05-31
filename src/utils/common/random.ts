@@ -4,22 +4,23 @@ import moment from 'moment'
 faker.locale = 'zh_CN'
 
 const randomGenerator = {
-  number: randomNumber,
   phone: randomPhone,
+  idCard: randomIdCard,
+  email: randomEmail,
+  date: randomDate,
+  number: randomNumber,
+  line: randomLine,
   zip: randomZip,
   city: randomCity,
   img: randomImg,
-  email: randomEmail,
   url: randomUrl,
   name: randomName,
   color: randomColor,
   text: randomText,
   money: randomMoney,
-  date: randomDate,
   time: randomTime,
   timestamp: randomTimestamp,
   rawTime: randomRawTime,
-  line: randomLine,
 }
 
 export type RandomKey = keyof typeof randomGenerator
@@ -70,6 +71,10 @@ function randomColor() {
 
 function randomText() {
   return faker.lorem.word()
+}
+
+function randomIdCard() {
+  return createRandomFromRegExp(/^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/)
 }
 
 function randomMoney(sign = '$') {

@@ -2,7 +2,8 @@
   <div class="devLog" :class="{hidden: isHidden}" @click.stop="onShow">
     <el-tabs v-model="activeTab">
       <el-tab-pane label="0" :name="tabsKey[0]">
-        当前路由：{{ routeName }}
+        当前路由：{{ routeName }}<br>
+        pressingKey: {{ currentPressKeys }}
         <template v-for="item in showData">
           <div :key="item.key" :title="item.description">
             {{ item.vm[item.name] }}
@@ -31,6 +32,13 @@
   </div>
 </template>
 <script lang="ts">
+
+/*
+
+# update
+clear pressKeys when page toggle ---- 2020-05-31 11:01:37
+*/
+
 // !attention, this component is created away from the project root Vue(App), which may cause some unexpected error when you attempt to use some global feature of root App, such as global directive ...
 
 import { Component, Vue, Watch } from 'vue-property-decorator'
@@ -50,7 +58,7 @@ import { clipboard } from '../../directives'
 export default class DevLog extends Vue {
   rootVm: Vue | null = null
   devData: IDevDataItem[] = []
-  isHidden = true
+  isHidden = false
   typesList = typesList
 
   //! attention, the first four key(code) is used to check for tabs switching
@@ -105,6 +113,17 @@ export default class DevLog extends Vue {
         event.stopPropagation()
       }
     })
+
+    let visibilityChange
+    if (typeof document.hidden !== 'undefined') {
+      visibilityChange = 'visibilitychange'
+    } else if (typeof (document as any).msHidden !== 'undefined') {
+      visibilityChange = 'msvisibilitychange'
+    } else if (typeof (document as any).webkitHidden !== 'undefined') {
+      visibilityChange = 'webkitvisibilitychange'
+    }
+
+    document.addEventListener(visibilityChange as string, () => { this.currentPressKeys = [] })
   }
 
   onShow() {
