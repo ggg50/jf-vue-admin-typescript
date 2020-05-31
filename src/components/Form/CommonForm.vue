@@ -3,7 +3,7 @@
     <el-row :gutter="90">
       <template v-for="(value, key) in innerForm">
         <el-col :key="key" :sm="smCol" :xl="xlCol">
-          <el-form-item :key="key" :label="innerDict[key].label" :prop="key" :required="innerDict[key].required !== false" :span="8">
+          <el-form-item :key="key" :label="innerDict[key].label" :prop="key" :required="innerDict[key].required" :span="8">
             <el-input v-if="innerDict[key].type === 'input'" :key="key" v-model="innerForm[key]" style="width: 100%;" />
 
             <el-input v-else-if="innerDict[key].type === 'number'" v-model="innerForm[key]" type="number" />
@@ -17,7 +17,7 @@
             <el-date-picker
               v-else-if="innerDict[key].type === 'dateRange'"
               v-model="innerForm[key]"
-              type="monthrange"
+              type="daterange"
               range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -63,6 +63,12 @@
 /*
 
 cancel event
+
+# usage
+
+# attention
+
+1. if item rules is present, item required property is set to true automatically, witch is the el-form's feature
 
 # Form item options:
   key: key of item, if current item is range-type item (such as dateRange), it should be an array includes 'start' key and 'end' key, just like ['start', 'end']
@@ -119,7 +125,7 @@ export interface IFormItem {
   rules?: any[]
   random?: RandomKey
   randomFormat?: any
-  required?: any // required in default
+  required?: boolean
 }
 
 interface IObject {
@@ -162,8 +168,8 @@ export default class extends Vue {
       const _value = this.innerForm[key]
       if (/range/i.test(_options.type)) {
         // 'range' type get keys from innerDict
-        _data[_options.key[0]] = _value[0] && moment(_value[0]).format(_options.format || 'YYYY-MM-DD')
-        _data[_options.key[1]] = _value[1] && moment(_value[1]).format(_options.format || 'YYYY-MM-DD')
+        _data[_options.key[0]] = _value && _value[0] && moment(_value[0]).format(_options.format || 'YYYY-MM-DD')
+        _data[_options.key[1]] = _value && _value[1] && moment(_value[1]).format(_options.format || 'YYYY-MM-DD')
       } else if (/date/i.test(_options.type)) {
         _data[key] = _value && moment(_value).format(_options.format || 'YYYY-MM-DD')
       } else if (/time/i.test(_options.type)) {
@@ -187,7 +193,7 @@ export default class extends Vue {
           console.error(`${this.$options.name}: type ${item.type} required key property is an array with two string item `)
         } else {
           // item.key[0]: use one of the two keys
-          _form[item.key[0]] = [null, null]
+          _form[item.key[0]] = null
           _dict[item.key[0]] = item
           _rules[item.key[0]] = item.rules || []
 
@@ -210,6 +216,16 @@ export default class extends Vue {
     this.innerForm = Object.assign({}, _form)
     this.innerDict = Object.assign({}, _dict)
     this.innerRules = Object.assign({}, _rules)
+  }
+
+  mounted() {
+    this.$dp([
+      {
+        name: 'resultForm',
+        routes: [this.$route.name || ''],
+        tab: 3,
+      }
+    ], this)
   }
 
   fillRandom() {
@@ -241,6 +257,8 @@ export default class extends Vue {
   // validator for range type item
   rangeValidator(validateFn?: Function) {
     function validator(rules: any, value: any, callback: any) {
+      if (value === null) callback(new Error('请选择'))
+
       if (!Array.isArray(value)) {
         console.error('validator checking error, \'range\' type value required value is an array with two item ')
       }
