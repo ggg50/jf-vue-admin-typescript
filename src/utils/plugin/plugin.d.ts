@@ -5,10 +5,7 @@ import { IDevOptionsItem } from '@/types/dev'
 declare module 'vue/types/vue' {
     interface Vue {
       $dp: (optionsList: IDevOptionsItem[] | string[], vm: Vue) => void
-    }
-}
-declare module 'vue/types/vue' {
-    interface Vue {
-      $ok: string
+      $_: any
+      $isProduction: boolean
     }
 }
