@@ -1,0 +1,398 @@
+$lineColor: #4398c8;
+$mainBackground: #fff;
+$stepBackground: #f2f2f2;
+$completedColor: hsl(131, 43%, 90%);
+$processingColor: #f5e1dd;
+$undoneColor:#dbd8c4;
+$agreeColor:#fb3931;
+$rejectColor:#fb3931;
+$lineWidth: 2px;
+$lineBorderStyle: $lineWidth solid $lineColor;
+$stepBorder: 1px solid black;
+$arrowBorder: 2 * $lineWidth solid $mainBackground;
+$stepZIndex: 3;
+$lineZIndex: 1;
+$textZIndex: 2;
+$arrowZIndex: 2;
+
+.flowChartInnerWrapper{
+  position:relative;
+}
+.containerWrap {
+position: absolute;
+top: 60px;
+left:60px;
+height: 80px;
+width: 120px;
+z-index:12;
+}
+.wrap{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 4px;
+  width: 100px;
+}
+.wrap .firstBox,.secondBox,.thirdBox {
+  height: 12px;
+  width: 38px;
+}
+.wrap .firstBox {
+  background-color:$completedColor;
+}
+.wrap .secondBox {
+  background-color:$processingColor;
+}
+.wrap .thirdBox {
+  background-color:$undoneColor;
+}
+.completed,.processing,.undone {
+margin-left: 6px;
+}
+div {
+  box-sizing: content-box;
+}
+
+@mixin arrowUp {
+  transform: rotate(180deg);
+}
+
+@mixin arrowDown {
+  transform: rotate(0deg);
+}
+
+@mixin arrowLeft {
+  transform: rotate(90deg);
+}
+
+@mixin arrowRight {
+  transform: rotate(-90deg);
+}
+
+@mixin arrowBottomOffset {
+  bottom: - $lineWidth * 2 + $lineWidth / 2;
+}
+@mixin arrowTopOffset {//
+  top: - $lineWidth * 2 + $lineWidth / 2;
+}
+@mixin arrowLeftOffset {//
+  left: - $lineWidth * 2 - $lineWidth / 2;
+}
+@mixin arrowRightOffset {
+  right: - $lineWidth * 2 - $lineWidth / 2;
+}
+
+.top {
+  position: absolute;
+  top: 3vw;
+  left: 0;
+  z-index: 10;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & .left {
+    color: $themeLight;
+
+    & .done, & .doing, & .undo {
+      margin-left: 2rem;
+      position: relative;
+
+      &::before {
+        display: inline-block;
+        content: '';
+        position: absolute;
+        width: 3vw;
+        height: 3vw;
+        border-radius: 50%;
+        background-color: #fff;
+        top: 50%;
+        transform: translate(-150%, -50%);
+      }
+    }
+
+    & .done::before {
+      background-color:$completedColor;
+    }
+
+    & .doing::before {
+      background-color: $processingColor;
+    }
+
+    & .undo::before {
+      background-color: $undoneColor;
+    }
+
+  }
+
+  & .right {
+    padding-right: 1rem;
+  }
+
+}
+
+.flowChartWrapper{
+  width: 100%;
+  height: 880px;
+  background-color: $mainBackground;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  position: relative;
+
+  & .flowChartInnerWrapper {
+    background-color: $mainBackground;
+    position: relative;
+  }
+}
+
+.tipsText {
+  color:$themeRed;
+  white-space: nowrap;
+}
+
+.line {
+  &.reject .text{
+    color: $rejectColor;
+  }
+}
+
+.line {
+  &.agree .text{
+    color:$agreeColor;
+    white-space: nowrap;
+  }
+}
+
+// step
+.step {
+  z-index: $stepZIndex;
+  position: absolute;
+  border-radius: 5px;
+  font-size: 16px;
+  color: black;
+  display: flex;
+  font-size: 0.9rem;
+  justify-content: center;
+  align-items: center;
+  background-color: $stepBackground;
+  // font-weight: lighter;
+  border: $stepBorder;
+  // transform: translate(-50%, -50%);
+
+  &.done {
+    background-color: $completedColor;
+  }
+
+  &.doing {
+    background-color: $processingColor;
+  }
+
+  & .text {
+    padding: 10px;
+  }
+}
+
+// line
+.line {
+  position: absolute;
+  z-index: $lineZIndex;
+  // border: 1px solid blue;
+  // transform: translate(-50%, -50%);
+
+  &.downRight, &.leftUp {
+    border-radius: 0 0 0 5px;
+    border-left: $lineBorderStyle;
+    border-bottom: $lineBorderStyle;
+  }
+
+  &.rightDown, &.upLeft {
+    border-radius: 0 5px 0 0;
+    border-top: $lineBorderStyle;
+    border-right: $lineBorderStyle;
+  }
+  &.downLeft, &.rightUp {
+    border-radius: 0 0 5px 0;
+    border-right: $lineBorderStyle;
+    border-bottom: $lineBorderStyle;
+  }
+  &.leftDown, &.upRight {
+    border-radius: 5px 0 0 0;
+    border-top: $lineBorderStyle;
+    border-left: $lineBorderStyle;
+  }
+
+  &.down, &.up {
+    border-left: $lineBorderStyle;
+  }
+  &.left, &.right {
+    border-top: $lineBorderStyle;
+  }
+
+  // &.upOffset {
+  //   transform: translateY($lineWidth);
+  // }
+  // &.downOffset {
+  //   transform: translateY(-$lineWidth);
+  // }
+  // &.leftOffset {
+  //   transform: translateX($lineWidth);
+  // }
+  // &.rightOffset {
+  //   transform: translateX(-$lineWidth);
+  // }
+
+  &.arrow {
+    &::after {
+      content: '';
+      display: block;
+      z-index: $arrowZIndex;
+      position: absolute;
+      width: 0;
+      height: 0;
+      border: $arrowBorder;
+      border-top-color: $lineColor;
+      border-bottom-width: 0;
+      // transform: translate(-50%, -100%);
+      // transform: translate(-50%, -100%) rotate(90deg);
+    }
+  }
+
+  & .text {
+    z-index: $textZIndex;
+    position: absolute;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  &.down {
+    &.arrow::after {
+      bottom: -$lineWidth;
+      @include arrowLeftOffset;
+      @include arrowDown;
+    }
+    & .text {
+      left: 0; top: 0; transform: translate(5px, 5px);
+    }
+  }
+
+  &.up {
+    &.arrow::after {
+      top: 0;
+      @include arrowLeftOffset;
+      @include arrowUp;
+    }
+    & .text {
+      right: 0; bottom: 0; transform: translate(5px, -5px);
+    }
+  }
+
+  &.left {
+    &.arrow::after {
+      left: -$lineWidth;
+      @include arrowTopOffset;
+      @include arrowLeft;
+    }
+    & .text {
+      left: 0; bottom: 0; transform: translate(5px, -5px);
+    }
+  }
+
+  &.right {
+    &.arrow::after {
+      right: - 2 * $lineWidth; // haha, i don't know 2* is required
+      @include arrowTopOffset;
+      @include arrowRight;
+    }
+    & .text {
+      right: 0; top: 0; transform: translate(-5px, 5px);
+    }
+  }
+
+  &.downRight {
+    &.arrow::after {
+      right: -$lineWidth;
+      @include arrowBottomOffset;
+      @include arrowRight;
+    }
+    &.text {
+      left: 0px; top: 0px; transform: translate(-5px, 5px);
+    }
+  }
+  &.leftUp {
+    &.arrow::after {
+      top: 0;
+      @include arrowLeftOffset;
+      @include arrowUp;
+    }
+
+    &.text {
+      right: 0px; bottom: 0px; transform: translate(5px, 5px);
+    }
+  }
+
+  &.rightDown {
+    &.arrow::after {
+      bottom: 0;
+      @include arrowRightOffset;
+      @include arrowDown;
+    }
+    &.text {
+      left: 0px; top: 0px; transform: translate(-5px, -5px);
+    }
+  }
+  &.upLeft {
+    &.arrow::after {
+      left: -$lineWidth;
+      // left: 0;
+      @include arrowTopOffset;
+      @include arrowLeft;
+    }
+    &.text {
+      right: 0px; bottom: 0px; transform: translate(-5px, -5px);
+    }
+  }
+
+  &.downLeft {
+    &.arrow::after {
+      left: -$lineWidth;
+      @include arrowBottomOffset;
+      @include arrowLeft;
+    }
+    &.text {
+      top: 0; right: 0; transform: translate(5px, 5px);
+    }
+  }
+  &.rightUp {
+    &.arrow::after {
+      top: 0;
+      @include arrowRightOffset;
+      @include arrowUp;
+    }
+    &.text {
+      bottom: 0; left: 0; transform: translate(5px, 5px);
+    }
+  }
+  &.leftDown {
+    &.arrow::after {
+      bottom: 0;
+      @include arrowLeftOffset;
+      @include arrowDown;
+    }
+    &.text {
+      top: 0; right: 0; transform: translate(-5px, -5px);
+    }
+  }
+  &.upRight {
+    &.arrow::after {
+      right: - $lineWidth;
+      @include arrowTopOffset;
+      @include arrowRight;
+    }
+    &.text {
+      bottom: 0; left: 0; transform: translate(-5px, 5px);
+    }
+  }
+}
