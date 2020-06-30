@@ -19,6 +19,10 @@ import '@/pwa/register-service-worker'
 import * as directives from '@/directives'
 import * as filters from '@/filters'
 import plugin from '@/utils/plugin'
+import _ from 'lodash'
+import '@/utils/data/applicantFilter.ts'
+import * as components from '@/utils/components'
+import { VueConstructor } from 'vue/types/umd'
 
 Vue.use(ElementUI, {
   size: AppModule.size, // Set element-ui default size
@@ -40,8 +44,13 @@ Object.keys(directives).forEach(key => {
 Object.keys(filters).forEach(key => {
   Vue.filter(key, (filters as { [key: string ]: Function })[key])
 })
+Object.keys(components).forEach(key => {
+  Vue.component(key, (components as {[key: string]: VueConstructor})[key])
+})
 
 Vue.config.productionTip = false
+Vue.prototype.$_ = _ // lodash
+Vue.prototype.$isProduction = process.env.NODE_ENV === 'production'
 
 Vue.use(plugin)
 
