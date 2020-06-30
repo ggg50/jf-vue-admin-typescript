@@ -1523,10 +1523,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.4.tgz#1581d6c16e3d4803eb079c87d4ac893ee7501c2c"
   integrity sha512-x26ur3dSXgv5AwKS0lNfbjpCakGIduWU1DU91Zz58ONRWrIKGunmZBNv4P7N+e27sJkiGDsw/3fT4AtsqQBrBA==
 
-"@types/node@^13.1.6":
-  version "13.13.9"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-13.13.9.tgz#79df4ae965fb76d31943b54a6419599307a21394"
-  integrity sha1-ed9K6WX7dtMZQ7VKZBlZkweiE5Q=
+"@types/node@^14.0.5":
+  version "14.0.14"
+  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.0.14.tgz?cache=0&sync_timestamp=1592989417189&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.0.14.tgz#24a0b5959f16ac141aeb0c5b3cd7a15b7c64cbce"
+  integrity sha1-JKC1lZ8WrBQa6wxbPNehW3xky84=
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4567,13 +4567,13 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-docx@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.npm.taobao.org/docx/download/docx-5.0.2.tgz#2e03f53f168b535ad9af225b116816d142d02b6e"
-  integrity sha1-LgP1PxaLU1rZryJbEWgW0ULQK24=
+docx@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.npm.taobao.org/docx/download/docx-5.2.1.tgz#ac945f0e28bb7c193fea18386eb6e6da7de0f4de"
+  integrity sha1-rJRfDii7fBk/6hg4brbm2n3g9N4=
   dependencies:
     "@types/jszip" "^3.1.4"
-    "@types/node" "^13.1.6"
+    "@types/node" "^14.0.5"
     jszip "^3.1.5"
     shortid "^2.2.15"
     xml "^1.0.1"
@@ -8323,12 +8323,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.15, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.3, lodash@^4.17.4:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
-
-lodash@^4.17.15:
+lodash@4.17.15, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.3, lodash@^4.17.4:
   version "4.17.15"
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.15.tgz?cache=0&sync_timestamp=1571657272199&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flodash%2Fdownload%2Flodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha1-tEf2ZwoEVbv+7dETku/zMOoJdUg=

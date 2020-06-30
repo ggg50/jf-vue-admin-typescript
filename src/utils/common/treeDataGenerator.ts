@@ -556,7 +556,7 @@ interface IKeyDict {
   children?: string
 }
 
-export function getTreeDataFromItemList(rawList: ITreeItem[], findRootItemFn: ICheckFn, keyDict: IKeyDict = {}) {
+export function createTreeDataFromItemList(rawList: ITreeItem[], findRootItemFn: ICheckFn, keyDict: IKeyDict = {}) {
   const list: ITreeItem[] = JSON.parse(JSON.stringify(rawList))
   let _length: number | null = null
   const _id = keyDict.id || 'id'
@@ -605,29 +605,13 @@ export function getTreeDataFromItemList(rawList: ITreeItem[], findRootItemFn: IC
   return treeData
 }
 
-// 判断是否增加选中
-
-export function getSelectStatus(arr1, arr2) {
-  const add = []
-  const reduce = []
-  const getAdd = arr2.filter(item => {
-    if (!item) return false
-    if (arr1.includes(item)) {
-      return false
-    } else {
-      return true
-    }
+// compare newTreeItemList with oldTreeItemList and then get addition and reduction
+export function getSelectResult(newList: ITreeItem[], oldList: ITreeItem[]) {
+  const add = oldList.filter(item => {
+    return item && !newList.includes(item)
   })
-  add.push(...new Set(getAdd))
-  const getReduce = arr1.filter(item => {
-    if (!item) return false
-    if (arr2.includes(item)) {
-      return false
-    } else {
-      return true
-    }
+  const reduce = newList.filter(item => {
+    return item && !oldList.includes(item)
   })
-  reduce.push(...new Set(getReduce))
-
   return [add, reduce]
 }

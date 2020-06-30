@@ -20,7 +20,7 @@
     "codemirror": "^5.53.2",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
-    "docx": "^5.0.2",
+    "docx": "^5.2.1",
     "driver.js": "^0.9.8",
     "echarts": "^4.7.0",
     "element-ui": "^2.13.1",

@@ -1,3 +1,4 @@
+// version 1.0.1
 import faker from 'faker'
 import RandExp from 'randexp'
 import moment from 'moment'
@@ -21,6 +22,9 @@ const randomGenerator = {
   time: randomTime,
   timestamp: randomTimestamp,
   rawTime: randomRawTime,
+  sex: randomSex,
+  status: randomStatus,
+  toggle: randomToggle,
 }
 
 export type RandomKey = keyof typeof randomGenerator
@@ -119,6 +123,18 @@ function randomLine(min = 20, max = 30): string {
   return _text
 }
 
+function randomSex() {
+  return getRandomFromArray(['男', '女'])
+}
+
+function randomStatus() {
+  return getRandomFromArray(['待处理', '处理中', '已完成'])
+}
+
+function randomToggle() {
+  return getRandomFromArray(['是', '否'])
+}
+
 function randomNumberWithExactLong(n: number): number {
   return (createNumber(8.99) + 1) * Math.pow(10, n - 1) + createNumber(Math.pow(10, n - 1) - 1)
 }
@@ -129,6 +145,11 @@ function createNumber(number: number): number {
 
 function createRandomFromRegExp(reg: RegExp): any {
   return new RandExp(reg).gen()
+}
+
+function getRandomFromArray(list: any[]): any {
+  const _index = Math.floor(list.length * Math.random())
+  return list[_index]
 }
 
 export function generateRandom(type: RandomKey, ...format: any) {

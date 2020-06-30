@@ -51,7 +51,7 @@ import PromiseTable, { ITableHeadItem } from '@/components/Table/PromiseTable.vu
 import CommonForm from '@/components/Form/CommonForm.vue'
 import CommonSearch from '@/components/Search/CommonSearch.vue'
 import CommonAction from '@/components/Action/CommonAction.vue'
-import { baseSearchApi } from '../../api/tableBase'
+import { baseSearchApi } from '@/api/tableBase'
 
 @Component({
   name: 'TablePage',

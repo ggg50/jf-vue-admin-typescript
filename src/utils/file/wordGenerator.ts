@@ -208,8 +208,6 @@ export class DocxGenerator {
   }
 
   private handleAndRemoveMatched(text: string, regName: Key): string {
-    console.log(111)
-
     return text.replace(this.reg[regName], (_, match) => {
       console.log(regName)
       console.log(match)
