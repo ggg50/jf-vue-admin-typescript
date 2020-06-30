@@ -1,16 +1,21 @@
 <template>
-  <el-table
-    :data="innerTableData"
-    style="width: 100%"
-    v-bind="$attrs"
-    v-on="$listeners"
+  <el-table :data="innerTableData"
+            style="width: 100%"
+            v-bind="$attrs"
+            v-on="$listeners"
+            @selection-change="handleSelectionChange"
   >
+    <el-table-column
+      v-if="enableSelection"
+      type="selection"
+      width="55"
+    />
     <el-table-column
       v-if="hasIndex"
       type="index"
       width="50"
     />
-    <template v-for="(item, index) in innerColumnsList">
+    <template v-for="(item, index) in innerColumnKeys">
       <!-- eslint-disable -->
       <el-table-column
         :key="item.title + index"
@@ -19,12 +24,8 @@
         v-bind="item.attrOptions || {}"
       >
       <!-- eslint-enable -->
-        <template #default="{row, $index}">
-          <slot
-            :name="item.key"
-            :row="row"
-            :rawRow="tableData[$index]"
-          >
+        <template #default="{row}">
+          <slot :name="item.key" :row="row" :rawRow="getRawData[item]">
             <span>{{ row[item.key] }}</span>
           </slot>
         </template>
@@ -49,6 +50,10 @@
 -可以引用全局过滤器自动处理数据
 -可以采用最简洁的模板定制表头并控制表单内容顺序
 -实在不开心，还可以用命名插槽自己搞事情
+
+# version
+
+1.0.2
 
 # description
 a common table component for 'lazy' developer table-building quickly
@@ -84,22 +89,20 @@ view more in 'awesome' ...
 
 # awesome
 
-1.every el-table props and event is work in this component (while el-table-column's unwork);
-
-2.global filter
+1.global filter
 I found that, always we have a requirement to use global filters to handle the expection-unmatch data, these why I introduce a auto template for filter-handling
 
 how to use it?
 
 first, you need to set a unique key(start with $) to every filterDict manually (say one of them is '$t', which means 'globalTimeFormatter');
-then, use it in columnsList item's key property(just like 'date$t'), so that every item's date value will be formated;
+then, use it in columnsList item's key property(just like 'time$t'), so that every item's 'time' value will be formated;
 then, nothing more ...
 
 # disadvantage
 
 1.for complex idea, try name slot, or give up this component ...
 
-2.for columnsList item with 'attrOptions', you cann't use the columnsList-template grammar
+2.for higher level columnsList item with 'attrOptions', you cann't use the columnsList-template grammar
 
 # demo data
 1.columnsList:
@@ -111,7 +114,7 @@ then, nothing more ...
 ],
 
 2.columnsList-template:
-['DDDD-date$t-100%', 'ADDRESS-address-200%', 'NAME-name-100%', 'momey-number$a-100%']
+['date$t-DDDD-100%', 'address-ADDRESS-200%', 'name-NAME-100%', 'number$a-momey-100%']
 
 3.tableData:
 [
@@ -132,22 +135,29 @@ edit data
 # update
 created ---- 2020-05-05 15:46:58
 dynamic add props to 'el-table-column' through 'columnsList' item's options property ---- 2020-05-11 00:21:27
+update tempate 'title-key-width' to 'key-title-width' ---- 2020-05-30 19:18:22
+generate random data ---- 2020-06-08 15:41:15
+change selected data into rawData ---- 2020-06-22 17:35:19
 
 # raw
 hasIndex|prop|Boolean|true|-|whether index show or not
+enableSelection|prop|Boolean|false|-|whether selection on work or not
 columnsList|prop|Array|-|required|message of table header, read more in addvence-usage
 tableData|prop|Array|-|required|array of table data, read more in addvence-usage
 distributeWidth|prop|Boolean|true|-|whether table auto distribute the space in proportion（是否平均分配剩余空白）
 slots|slot|{row, rawRow}|-|-|every column have a slot with name equal to it's column key
+turnOnTest|data|-|-|-|turn on random data manually
 */
 
-import { Prop, Vue, Component } from 'vue-property-decorator'
-import { IFilterKey, getGlobalFilter } from '@/utils/filtersDict'
+import { Prop, Vue, Component, PropSync, Watch } from 'vue-property-decorator'
+import { IFilterKey, getGlobalFilter } from '../../utils/filtersDict'
+import { generateRandom, RandomKey } from '../../utils/common/random'
 
-interface ITableItem {
+export interface ITableHeadItem {
   title: string
   key: string
   width?: string | number
+  random?: RandomKey
 }
 
 @Component({
@@ -156,13 +166,17 @@ interface ITableItem {
 
 export default class extends Vue {
   @Prop({ default: false }) hasIndex!: boolean
+  @Prop({ default: false }) enableSelection!: boolean
   @Prop({ default: 1 }) pageNo!: number
   @Prop({ required: true }) tableData!: any[]
   @Prop({ default: true }) distributeWidth!: boolean
-  @Prop({ required: true }) columnsList!: ITableItem[] | string[]
+  @Prop({ required: true }) columnsList!: ITableHeadItem[] | string[]
+  @PropSync('selectedRows') innerSelectedRows!: any[]
 
-  innerColumnKeys: string[] = []
   filterReg = /\$.*$/
+  private turnOnTest = false // useful random data auto-generate feature
+  private dataMap = new Map()
+
   // validator: function(value) {
   //   for (const item of value) {
   //     if (typeof item === 'string') {
@@ -184,15 +198,15 @@ export default class extends Vue {
   //   return true
   // }
 
-  get innerRawColumnsList(): ITableItem[] {
+  get innerRawcolumnsList(): ITableHeadItem[] {
     let _list = JSON.parse(JSON.stringify(this.columnsList))
     if (typeof _list[0] === 'string') {
       _list = _list.map((item: string) => {
         const values = item.split('-')
         return {
-          title: values[0].trim(),
-          key: values[1].trim(),
-          width: values[2].trim()
+          key: values[0].trim(),
+          title: values[1].trim(),
+          width: values[2]?.trim() || '100%'
         }
       })
     }
@@ -201,23 +215,25 @@ export default class extends Vue {
 
   // key with global filters' identifier
   get innerColumnKeysWithIdentifier(): string[] {
-    return this.innerRawColumnsList.map((item: ITableItem) => item.key)
+    return this.innerRawcolumnsList.map((item: ITableHeadItem) => item.key)
   }
 
-  get innerColumnsList(): ITableItem[] {
-    const _list = JSON.parse(JSON.stringify(this.innerRawColumnsList))
+  get innerColumnKeys(): ITableHeadItem[] {
+    const _list = JSON.parse(JSON.stringify(this.innerRawcolumnsList))
     // remove '$\w' in every column key
-    _list.forEach((item: ITableItem) => (item.key = item.key.replace(this.filterReg, '')))
+    _list.forEach((item: ITableHeadItem) => (item.key = item.key.replace(this.filterReg, '')))
     return _list
   }
 
-  get innerTableData() {
+  get innerTableData(): any[] {
     // check filter pre-handle required and edit raw's clone data
-    const data = JSON.parse(JSON.stringify(this.tableData))
-    this.innerColumnKeys.forEach((item: string) => {
-      if (this.filterReg.test(item)) {
-        const _match: IFilterKey = (item.match(this.filterReg)?.[0] as IFilterKey)
-        const key: string = item.replace(this.filterReg, '')
+    let data = JSON.parse(JSON.stringify(this.tableData))
+    this.innerColumnKeys.forEach((item: ITableHeadItem, index: number) => {
+      const _k = item.key
+      // if has globalFilter sign, do something ……
+      if (this.filterReg.test(_k)) {
+        const _match: IFilterKey = (_k.match(this.filterReg)?.[0] as IFilterKey)
+        const key: string = _k.replace(this.filterReg, '')
         const globalFilter = getGlobalFilter(_match, this)
 
         if (globalFilter) {
@@ -225,11 +241,44 @@ export default class extends Vue {
         }
       }
     })
+
+    if (this.turnOnTest && data.length === 0) {
+      data = this.insertRandomData()
+    }
     return data
   }
 
   get widthType() {
     return this.distributeWidth ? 'min-width' : 'width'
+  }
+
+  @Watch('innerTableData', { deep: true, immediate: true })
+  generateMap() {
+    this.dataMap = new Map()
+    this.innerTableData.forEach((item, index) => {
+      this.dataMap.set(item, this.tableData[index])
+    })
+  }
+
+  handleSelectionChange(rowsList: any[]) {
+    this.innerSelectedRows = rowsList.map(this.getRawData)
+  }
+
+  insertRandomData() {
+    const _list = []
+    for (let i = 0; i < 10; i++) {
+      const _data: {[prop: string]: any} = {}
+      this.innerColumnKeys.forEach(item => {
+        const _type: RandomKey = item.random || 'text'
+        _data[item.key] = generateRandom(_type)
+      })
+      _list.push(_data)
+    }
+    return _list
+  }
+
+  getRawData(item: {[key: string]: any}): {[key: string]: any} {
+    return this.dataMap.get(item)
   }
 }
 </script>
